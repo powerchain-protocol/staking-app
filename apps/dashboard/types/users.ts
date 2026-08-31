@@ -1,0 +1,2 @@
+export interface UserProfile{subject_id:string;username?:string|null;display_name?:string|null;avatar_url?:string|null;bio?:string|null;country_code?:string|null;organization?:string|null;updated_at?:string}
+export interface UserSettings{subject_id:string;locale:string;currency:string;theme:'light'|'dark'|'system';notifications:Record<string,unknown>;privacy:Record<string,unknown>;updated_at?:string}

@@ -1,0 +1,1 @@
+export function StatusBadge({status}:{status:string}){const normalized=status.toLowerCase();return <span className={`badge ${normalized.includes('fail')||normalized.includes('error')?'danger':normalized.includes('pending')||normalized.includes('degrad')?'warn':'success'}`}>{status}</span>}

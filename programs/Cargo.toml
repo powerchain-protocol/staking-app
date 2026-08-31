@@ -1,0 +1,12 @@
+[workspace]
+members = [
+  "solana/staking",
+  "solana/governance",
+  "solana/bonds",
+  "solana/bridge",
+]
+resolver = "2"
+
+[workspace.dependencies]
+anchor-lang = { version = "=1.1.2", features = ["init-if-needed"] }
+anchor-spl = { version = "=1.1.2", features = ["associated_token", "token_2022", "token_interface"] }

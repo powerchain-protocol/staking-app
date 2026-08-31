@@ -1,0 +1,36 @@
+import fs from 'node:fs'; import path from 'node:path';
+const root=process.cwd();let n=0,failed=0;const pass=x=>{n++;console.log('PASS ',x)},fail=x=>{n++;failed++;console.error('FAIL ',x)};
+const file=p=>fs.existsSync(path.join(root,p))?pass(`file:${p}`):fail(`file:${p}`);
+const text=(p,m,l)=>{const f=path.join(root,p);fs.existsSync(f)&&fs.readFileSync(f,'utf8').includes(m)?pass(l):fail(l)};
+[
+'apps/backend/db/migrations/011_ai_runtime.sql','apps/backend/db/migrations/012_ai_reliability_evals.sql','apps/backend/lib/ai/types.ts','apps/backend/lib/ai/providers.ts','apps/backend/lib/ai/provider-health.ts','apps/backend/lib/ai/orchestrator.ts','apps/backend/lib/ai/prompts.ts','apps/backend/lib/ai/tool-contracts.ts','apps/backend/lib/ai/evals.ts','apps/backend/lib/ai/metrics.ts','apps/backend/lib/ai/retention.ts','apps/backend/lib/ai/planner.ts','apps/backend/lib/ai/grounding.ts','apps/backend/lib/ai/verification.ts','apps/backend/lib/ai/mcp.ts','apps/backend/lib/ai/mpc.ts','apps/backend/lib/ai/tools.ts','apps/backend/lib/ai/catalog.ts','apps/backend/lib/ai/response-styles.ts','apps/backend/scripts/ingest-ai-knowledge.mjs','apps/backend/app/api/v1/ai/providers/route.ts','apps/backend/app/api/v1/ai/capabilities/route.ts','apps/backend/app/api/v1/ai/chat/stream/route.ts','apps/backend/app/api/v1/ai/feedback/route.ts','apps/backend/app/api/v1/admin/ai/evals/route.ts','apps/backend/app/api/v1/admin/ai/overview/route.ts','apps/backend/app/api/v1/ai/conversations/[id]/route.ts','apps/backend/app/api/v1/ai/assistants/route.ts','apps/backend/app/api/v1/ai/skills/route.ts','apps/backend/app/api/v1/ai/rag/search/route.ts','apps/backend/app/api/v1/ai/conversations/route.ts','apps/backend/app/api/v1/ai/conversations/[id]/messages/route.ts','apps/dashboard/app/copilot/page.tsx','apps/dashboard/components/ai/copilot-workspace.tsx','apps/dashboard/components/ai/copilot-message.tsx','apps/dashboard/lib/powerchain/ai-api.ts','apps/dashboard/ai/providers.tsx','skills/characters.md','skills/skills.md','skills/assistants.md','skills/agents.md'
+].forEach(file);
+for(const d of ['generic','solana','sui','powerchain','renewables','charts','data','support'])file(`apps/backend/lib/ai/agents/${d}/index.ts`);
+text('apps/backend/lib/ai/orchestrator.ts','boundedHistory','ai:bounded-conversation-memory');
+text('apps/backend/lib/ai/orchestrator.ts',"status: 'UNAVAILABLE'",'ai:tool-failure-fail-soft');
+text('apps/backend/lib/ai/security.ts','assertAiOutputSafe','ai:output-dlp');
+text('apps/backend/lib/ai/security.ts','AI_STATE_CHANGE_BLOCKED','ai:state-change-hard-block');
+text('apps/backend/lib/ai/planner.ts','planReadTools','ai:deterministic-read-tool-planner');
+text('apps/backend/lib/ai/providers.ts','history?:Array','ai:provider-conversation-history');
+text('apps/backend/lib/ai/prompts.ts','abstain instead of guessing','ai:abstention-policy');
+text('apps/backend/lib/ai/verification.ts','UNAVAILABLE','ai:unsupported-evidence-abstention');
+text('apps/backend/lib/ai/provider-health.ts','AI_PROVIDER_CIRCUIT_OPEN','ai:provider-circuit-breaker');
+text('apps/backend/lib/ai/provider-health.ts','fallbackCount','ai:provider-failover');
+text('apps/backend/lib/ai/tool-contracts.ts','AI_TOOL_CONTRACT_MISSING','ai:tool-contracts');
+text('apps/backend/lib/ai/grounding.ts','quality_score','ai:rag-quality-score');
+text('apps/backend/lib/ai/grounding.ts','lexicalOverlap','ai:rag-hybrid-rerank');
+text('apps/backend/lib/ai/evals.ts','runPolicyEvals','ai:policy-evals');
+text('apps/backend/lib/ai/orchestrator.ts','AI_PROMPT_VERSION_CONFLICT','ai:prompt-version-immutable');
+text('apps/backend/lib/ai/grounding.ts','instruction-like source line removed','ai:rag-prompt-injection-filter');
+text('apps/backend/lib/ai/retention.ts','aiConversationRetentionDays','ai:conversation-retention');
+text('apps/backend/lib/ai/metrics.ts','avg_citation_coverage','ai:operational-metrics');
+text('apps/backend/lib/ai/mcp.ts','STATE_CHANGE','ai:mcp-state-change-boundary');
+text('apps/backend/lib/ai/mpc.ts','AI_MPC_SIGNING_BLOCKED','ai:mpc-signing-boundary');
+text('apps/backend/lib/ai/providers.ts','lora_adapter','ai:lora-local-provider');
+text('apps/backend/lib/ai/tools.ts','charts.compose','ai:verified-chart-tool');
+text('apps/dashboard/components/ai/copilot-workspace.tsx','No wallet signing','ui:ai-authority-label');
+text('apps/dashboard/components/ai/copilot-workspace.tsx','streamCopilot','ui:streaming-stage-client');
+text('apps/dashboard/components/ai/copilot-message.tsx','/api/v1/ai/feedback','ui:feedback-loop');
+text('apps/backend/lib/server/system-health.ts','ai-runtime-v3','readiness:ai-runtime-v3');
+const config=fs.readFileSync(path.join(root,'apps/backend/lib/server/config.ts'),'utf8');for(const m of ['AI_DEFAULT_PROVIDER','AI_PROVIDER_FALLBACKS','AI_PROVIDER_FAILURE_THRESHOLD','AI_RAG_MIN_EVIDENCE_SCORE','AI_MAX_TOOL_CALLS','AI_EVAL_MIN_PASS_RATE','AI_PROMPT_VERSION','AI_CONVERSATION_RETENTION_DAYS','AI_MAX_HISTORY_BYTES'])config.includes(m)?pass(`config:${m}`):fail(`config:${m}`);
+if(failed){console.error(`\nAI runtime audit failed: ${failed}/${n}`);process.exit(1)}console.log(`\nAI runtime audit passed: ${n} checks.`);

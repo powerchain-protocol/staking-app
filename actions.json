@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "apiBase": "/api/v1",
+  "registry": "/api/v1/actions",
+  "endpoints": "/api/v1/endpoints",
+  "rules": [
+    {
+      "pathPattern": "/actions/**",
+      "apiPath": "/api/v1/actions"
+    }
+  ],
+  "realtime": {
+    "status": "/api/v1/realtime/status",
+    "token": "/api/v1/realtime/token",
+    "events": "/api/v1/realtime/events",
+    "authoritativeState": false
+  }
+}

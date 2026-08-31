@@ -1,0 +1,1 @@
+import {getPlatformIdentity} from '@/lib/auth/identity';import {getSession} from '@/lib/server/session';import {ok,route} from '@/lib/server/http';export const runtime='nodejs';export const GET=route(async(r:Request)=>ok({identity:await getPlatformIdentity(r),walletSession:await getSession()}));

@@ -1,0 +1,2 @@
+export function shortAddress(value:string,head=4,tail=4){return value.length<=head+tail+1?value:`${value.slice(0,head)}…${value.slice(-tail)}`;}
+export function formatAtomic(value:string|bigint,decimals:number){const n=typeof value==='bigint'?value:BigInt(value);const scale=10n**BigInt(decimals);const whole=n/scale;const frac=(n%scale).toString().padStart(decimals,'0').replace(/0+$/,'');return `${whole}${frac?`.${frac}`:''}`;}

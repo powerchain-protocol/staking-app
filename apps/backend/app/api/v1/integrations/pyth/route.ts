@@ -1,0 +1,2 @@
+import { ApiError,ok,route } from '@/lib/server/http';import { pythPrice } from '@/lib/pyth';
+export const runtime='nodejs';export const GET=route(async(request:Request)=>{const id=new URL(request.url).searchParams.get('feedId')??'';if(!id)throw new ApiError(400,'INVALID_ARGUMENT','feedId is required');const p=await pythPrice(id);return ok({price:p.price,confidence:p.conf,publishTime:p.publishTime});});

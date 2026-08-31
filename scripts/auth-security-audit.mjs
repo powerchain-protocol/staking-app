@@ -1,0 +1,30 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=process.cwd();let n=0,failed=0;
+const pass=(x)=>{n++;console.log('PASS ',x)};const fail=(x)=>{n++;failed++;console.error('FAIL ',x)};
+const file=(p)=>fs.existsSync(path.join(root,p))?pass(`file:${p}`):fail(`file:${p}`);
+const text=(p,needle,label)=>{const f=path.join(root,p);fs.existsSync(f)&&fs.readFileSync(f,'utf8').includes(needle)?pass(label):fail(label)};
+const json=(p)=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
+const backend=json('apps/backend/package.json'),dashboard=json('apps/dashboard/package.json');
+for(const [pkg,ver] of [['@clerk/backend','3.16.10'],['better-auth','1.7.2'],['svix','2.1.0']]) backend.dependencies?.[pkg]===ver?pass(`backend-dependency:${pkg}@${ver}`):fail(`backend-dependency:${pkg}@${ver}`);
+for(const [pkg,ver] of [['@clerk/nextjs','7.8.3'],['better-auth','1.7.2']]) dashboard.dependencies?.[pkg]===ver?pass(`dashboard-dependency:${pkg}@${ver}`):fail(`dashboard-dependency:${pkg}@${ver}`);
+[
+'apps/backend/db/migrations/010_identity_ai_confirmations.sql','apps/backend/lib/auth/identity.ts','apps/backend/lib/auth/better-auth.ts','apps/backend/lib/auth/confirmations.ts','apps/backend/app/api/v1/auth/identity/route.ts','apps/backend/app/api/v1/auth/confirmations/challenge/route.ts','apps/backend/app/api/v1/auth/confirmations/verify/route.ts','apps/backend/app/api/webhooks/clerk/route.ts','apps/backend/lib/ai/security.ts','apps/backend/app/api/v1/ai/chat/route.ts','apps/backend/app/api/v1/ai/capabilities/route.ts','apps/backend/lib/mail/email-template.ts','apps/backend/lib/mail/mail.ts','apps/backend/lib/tokens/trusted-tokens.csv','apps/backend/lib/tokens/trusted.ts','apps/backend/lib/events.ts','apps/backend/types/events.ts','apps/backend/config/system.ts','apps/backend/protocols/index.ts','apps/backend/app/api/v1/route.ts','apps/dashboard/app/login/login-form.tsx','apps/dashboard/lib/auth/better-auth-client.ts','apps/dashboard/components/account-control.tsx','apps/dashboard/proxy.ts','apps/dashboard/components/error-boundary.tsx','apps/dashboard/components/ui/toast.tsx','apps/dashboard/hooks/use-toast.ts','apps/dashboard/hooks/use-events.ts','apps/dashboard/components/messages.tsx','apps/dashboard/components/informations.tsx','apps/dashboard/lib/powerchain/api.ts','apps/dashboard/lib/powerchain/staking-api.ts','apps/dashboard/redirects/index.ts','apps/dashboard/utils/currencies.ts','apps/dashboard/config/system.ts'
+].forEach(file);
+text('apps/backend/lib/server/session.ts','IDENTITY_WALLET_SESSION_MISMATCH','session:identity-wallet-binding');
+text('apps/backend/app/api/v1/auth/wallet/challenge/route.ts','subject_id','wallet-challenge:identity-binding');
+text('apps/backend/lib/auth/confirmations.ts','x-powerchain-confirmation','confirmation:header');
+text('apps/backend/lib/auth/confirmations.ts','action_hash','confirmation:payload-binding');
+text('apps/backend/lib/ai/security.ts','AI_STATE_CHANGE_BLOCKED','ai:state-change-block');
+text('apps/backend/lib/ai/providers.ts','x-powerchain-signature','ai:hmac-gateway-signature');
+text('apps/backend/app/api/webhooks/clerk/route.ts','new Webhook','clerk:webhook-svix');
+text('apps/backend/lib/tokens/trusted.ts','assertTrustedToken','tokens:trust-policy');
+text('apps/backend/lib/server/system-health.ts','identity_security','readiness:identity-security');
+text('apps/backend/lib/server/system-health.ts','ai_security','readiness:ai-security');
+text('apps/dashboard/app/layout.tsx','ClerkProvider','dashboard:clerk-provider');
+text('apps/dashboard/app/login/login-form.tsx','<SignIn','dashboard:clerk-social-login');
+text('apps/dashboard/app/login/login-form.tsx','betterAuthClient.signIn.social','dashboard:better-auth-social-login');
+text('apps/dashboard/proxy.ts','getSessionCookie','dashboard:better-auth-route-protection');
+text('apps/dashboard/components/ui/toast.tsx','useEvents','dashboard:event-toast-wired');
+text('apps/backend/prisma/schema.prisma','authProvider','prisma:user-profile-auth');
+if(failed){console.error(`\nAuth/AI security audit failed: ${failed}/${n}`);process.exit(1)}console.log(`\nAuth/AI security audit passed: ${n} checks.`);

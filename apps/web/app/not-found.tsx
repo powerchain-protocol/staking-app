@@ -1,0 +1,1 @@
+import Link from'next/link';export default function NotFound(){return <main className='legal-page'><h1>Page not found</h1><p>The requested PowerChain resource does not exist.</p><Link href='/'>Return home</Link></main>}

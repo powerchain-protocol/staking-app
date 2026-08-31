@@ -1,0 +1,6 @@
+symbol,network,environment,address,decimals,category,enabled,source
+PWRC,SOLANA,*,${PWRC_MINT},9,utility,true,PowerChain deployment config
+USDC,SOLANA,*,${CCTP_USDC_MINT},6,stablecoin,true,Circle deployment config
+SOL,SOLANA,*,NATIVE,9,native,true,Solana
+wPWRC,SUI,*,${WPWRC_COIN_TYPE},9,wrapped,true,PowerChain bridge config
+SUI,SUI,*,NATIVE,9,native,true,Sui

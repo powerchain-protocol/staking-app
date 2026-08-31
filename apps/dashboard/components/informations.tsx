@@ -1,0 +1,1 @@
+import{Icons}from'@/components/icons';export function Information({children}:{children:React.ReactNode}){return <div className='information'><Icons.Info size={16}/><div className='small'>{children}</div></div>}

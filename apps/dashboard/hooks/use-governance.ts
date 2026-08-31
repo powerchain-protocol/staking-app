@@ -1,0 +1,2 @@
+'use client';import { endpoints } from '@powerchain/contracts';import { useLiveQuery } from './use-live-query';
+export function useGovernance(enabled=true){const overview=useLiveQuery<any>(endpoints.governance.overview,['governance.intent','governance.proposal','staking.position'],{enabled});const proposals=useLiveQuery<{proposals:any[]}>(endpoints.governance.proposals,['governance.intent','governance.proposal'],{enabled});return{overview,proposals};}

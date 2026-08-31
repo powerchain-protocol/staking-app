@@ -1,0 +1,19 @@
+[toolchain]
+anchor_version = "1.1.2"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+powerchain_staking = "GEEXw67SDvppmYS1arWpNBxxJgcK7js4YTYq2QQNAeSh"
+powerchain_governance = "9KMi9SuzLHujJTVVuuzKrkVQ5V49ye8Qdw6snTohDbX7"
+powerchain_bonds = "EpqCcMN2Ac2SnQuQaXmmNh61q8mD2YexoiESHAZosRBD"
+powerchain_bridge = "EgWd4FYsnbxZeZUZ8jzQeLhY3Eo2PLPHgkApHTvCdLNy"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "node tests/protocol-layout.mjs"

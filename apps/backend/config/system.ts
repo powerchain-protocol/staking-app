@@ -1,0 +1,1 @@
+export const SYSTEM_NAME='PowerChain Staking';export const SYSTEM_VERSION='1.0.0';export const AUTH_POLICY_VERSION='auth-v2-clerk-wallet';export const AI_POLICY_VERSION='ai-security-v1';export const RECEIPT_POLICY_VERSION='receipt-chain-v1';

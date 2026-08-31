@@ -1,0 +1,1 @@
+'use client';import { endpoints } from '@powerchain/contracts';import { apiJson } from '@powerchain/api-client';export const refreshHealthAction=()=>apiJson(endpoints.system.health);export const refreshReadinessAction=()=>apiJson(endpoints.system.readiness);

@@ -1,0 +1,2 @@
+import { env } from '@/lib/server/config';
+export function deploymentNetworks(){return{deploymentTier:env.deploymentTier,releaseChannel:env.releaseChannel,solana:{cluster:env.solanaCluster,rpcMode:env.solanaRpcUrl?'configured':env.heliusApiKey?'helius':'development-fallback'},sui:{network:env.suiNetwork,configured:Boolean(env.suiGrpcUrl)},cctp:{sourceDomain:env.cctpSourceDomainId,destinationDomain:env.cctpDestinationDomainId,configured:Boolean(env.cctpUsdcMint&&env.cctpDestinationDomainId!=null)}};}

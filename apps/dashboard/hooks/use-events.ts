@@ -1,0 +1,1 @@
+'use client';import{useEffect}from'react';import{onUiEvent}from'@/lib/events';import type{UiEvent}from'@/types/events';export function useEvents(handler:(event:UiEvent)=>void){useEffect(()=>onUiEvent(handler),[handler])}

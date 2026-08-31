@@ -1,0 +1,1 @@
+export function LineChart(){return <div className="chart"><svg viewBox="0 0 600 210" preserveAspectRatio="none" aria-label="Rewards trend"><polyline fill="none" stroke="#0b6b38" strokeWidth="4" points="0,185 45,170 80,160 120,150 160,135 210,130 250,112 300,105 340,88 390,82 430,68 470,72 515,49 555,42 600,28"/></svg></div>}

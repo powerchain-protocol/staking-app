@@ -1,0 +1,2 @@
+import { ok,route,ApiError } from '@/lib/server/http';import { requireSession } from '@/lib/server/session';import { db } from '@/lib/server/db';
+export const runtime='nodejs';export const GET=route(async(_r:Request,c:{params:Promise<{id:string}>})=>{const s=await requireSession();const{id}=await c.params;const[row]=await db()`SELECT * FROM immutable_receipts WHERE id=${id} AND subject_id=${s.sub} LIMIT 1`;if(!row)throw new ApiError(404,'RECEIPT_NOT_FOUND','Receipt not found');return ok(row);});

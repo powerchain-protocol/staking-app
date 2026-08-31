@@ -1,0 +1,4 @@
+'use client';
+import { useEffect } from 'react';
+import { Icons } from '@/components/icons';
+export default function ErrorBoundary({error,reset}:{error:Error&{digest?:string};reset:()=>void}){useEffect(()=>{console.error('PowerChain page error',error.digest??error.message)},[error]);return <div className="page-wrap single-column"><section className="card error-state"><div className="impact-icon"><Icons.TriangleAlert size={24}/></div><h1>Something went wrong</h1><p className="page-sub">The page could not be rendered. No transaction is implied or completed by this error.</p>{error.digest&&<div className="small mono">Error reference: {error.digest}</div>}<div className="action-row"><button className="primary" onClick={reset}>Try again</button><a className="secondary" href="/">Return to overview</a></div></section></div>}

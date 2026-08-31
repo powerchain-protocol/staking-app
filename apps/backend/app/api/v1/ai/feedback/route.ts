@@ -1,0 +1,6 @@
+import { requirePlatformIdentity } from '@/lib/auth/identity';
+import { db } from '@/lib/server/db';
+import { ApiError, jsonBody, ok, requireString, route } from '@/lib/server/http';
+import { enforceRateLimit, rateLimitKey } from '@/lib/server/rate-limit';
+export const runtime='nodejs';
+export const POST=route(async(request:Request)=>{const identity=await requirePlatformIdentity(request);await enforceRateLimit(rateLimitKey('ai-feedback',identity.subjectId),30,60);const body=await jsonBody<Record<string,unknown>>(request);const messageId=requireString(body.messageId,'messageId',64);const rating=Number(body.rating);if(rating!==1&&rating!==-1)throw new ApiError(400,'INVALID_ARGUMENT','rating must be 1 or -1');const reason=typeof body.reason==='string'?body.reason.slice(0,1000):null;const rows=await db()`SELECT id::text,conversation_id::text FROM ai_messages WHERE id=${messageId}::uuid AND subject_id=${identity.subjectId} AND role='ASSISTANT'`;if(!rows[0])throw new ApiError(404,'AI_MESSAGE_NOT_FOUND','Assistant message not found');await db()`INSERT INTO ai_feedback(subject_id,conversation_id,message_id,rating,reason) VALUES(${identity.subjectId},${rows[0].conversation_id}::uuid,${messageId}::uuid,${rating},${reason}) ON CONFLICT(subject_id,message_id) DO UPDATE SET rating=excluded.rating,reason=excluded.reason,created_at=now()`;return ok({saved:true});});

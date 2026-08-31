@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String   @id
+  status         String   @default("ACTIVE")
+  primaryWallet  String?  @map("primary_wallet")
+  primaryNetwork String?  @map("primary_network")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  profile        UserProfile?
+  settings       UserSettings?
+  linkedAccounts LinkedAccount[]
+  portfolios     PortfolioSnapshot[]
+  leaderboard    LeaderboardScore?
+
+  @@map("users")
+}
+
+model UserProfile {
+  subjectId    String    @id @map("subject_id")
+  username     String?   @unique
+  displayName  String?   @map("display_name")
+  email        String?
+  avatarUrl    String?   @map("avatar_url")
+  bio          String?
+  countryCode  String?   @map("country_code")
+  organization String?
+  authProvider String?   @map("auth_provider")
+  lastSignInAt DateTime? @map("last_sign_in_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  user         User      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model UserSettings {
+  subjectId     String   @id @map("subject_id")
+  locale        String   @default("en")
+  currency      String   @default("USD")
+  theme         String   @default("light")
+  notifications Json     @default("{}")
+  privacy       Json     @default("{}")
+  updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  user          User     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+model LinkedAccount {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subjectId       String   @map("subject_id")
+  provider        String
+  providerSubject String   @map("provider_subject")
+  walletAddress   String?  @map("wallet_address")
+  verifiedAt      DateTime @default(now()) @map("verified_at") @db.Timestamptz(6)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user            User     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerSubject])
+  @@map("linked_accounts")
+}
+
+model PortfolioSnapshot {
+  id            BigInt   @id @default(autoincrement())
+  subjectId     String   @map("subject_id")
+  walletAddress String   @map("wallet_address")
+  network       String
+  totalValueUsd Decimal  @default(0) @map("total_value_usd") @db.Decimal(30,10)
+  assets        Json     @default("[]")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user          User     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId, createdAt])
+  @@map("portfolio_snapshots")
+}
+
+model LeaderboardScore {
+  subjectId       String   @id @map("subject_id")
+  stakingScore    Decimal  @default(0) @map("staking_score") @db.Decimal(30,6)
+  governanceScore Decimal  @default(0) @map("governance_score") @db.Decimal(30,6)
+  networkScore    Decimal  @default(0) @map("network_score") @db.Decimal(30,6)
+  communityScore  Decimal  @default(0) @map("community_score") @db.Decimal(30,6)
+  totalScore      Decimal  @default(dbgenerated()) @map("total_score") @db.Decimal(30,6)
+  policyVersion   String   @default("v1") @map("policy_version")
+  calculatedAt    DateTime @default(now()) @map("calculated_at") @db.Timestamptz(6)
+  user            User     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@map("leaderboard_scores")
+}

@@ -1,0 +1,3 @@
+export class PowerChainApiError extends Error{constructor(public status:number,public code:string,message:string,public requestId?:string){super(message)}}
+export async function powerchainApi<T>(path:string,init:RequestInit={}){const r=await fetch(path,{...init,credentials:'include',headers:{accept:'application/json',...(init.body?{'content-type':'application/json'}:{}),...(init.headers??{})},cache:'no-store'});const body=await r.json().catch(()=>({}));if(!r.ok)throw new PowerChainApiError(r.status,body?.error?.code??'API_ERROR',body?.error?.message??`Request failed (${r.status})`,body?.error?.requestId);return body as T}
+export function idempotencyKey(prefix='pc'){return `${prefix}:${crypto.randomUUID()}`}

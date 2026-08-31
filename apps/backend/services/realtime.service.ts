@@ -1,0 +1,1 @@
+import 'server-only';import { issueRealtimeToken } from '@/lib/realtime/token';import { realtimeEvents } from '@/lib/realtime/events';export const realtimeService={issueToken:issueRealtimeToken,events:realtimeEvents};

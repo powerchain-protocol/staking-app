@@ -1,0 +1,13 @@
+{
+  "name": "@powerchain/integrations",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@powerchain/core": "1.0.0"
+  }
+}

@@ -1,0 +1,4 @@
+export function formatAtomic(amount:string|bigint,decimals=9,maxFraction=4){const n=typeof amount==='bigint'?amount:BigInt(amount||'0');const scale=10n**BigInt(decimals);const whole=n/scale;const fraction=(n%scale).toString().padStart(decimals,'0').slice(0,maxFraction).replace(/0+$/,'');return fraction?`${whole.toLocaleString()}.${fraction}`:whole.toLocaleString();}
+export function formatUsd(value:number|undefined){return value==null||!Number.isFinite(value)?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:value<1?6:2}).format(value);}
+export function shortAddress(value?:string|null,left=4,right=4){if(!value)return'—';return value.length<=left+right+2?value:`${value.slice(0,left)}…${value.slice(-right)}`;}
+export function formatDate(value?:string|null){if(!value)return'—';return new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));}

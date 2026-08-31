@@ -1,0 +1,1 @@
+export function Field({label,hint,error,children}:{label:string;hint?:string;error?:string;children:React.ReactNode}){return <label className='pc-field'><span>{label}</span>{children}{error?<small className='field-error'>{error}</small>:hint?<small>{hint}</small>:null}</label>}

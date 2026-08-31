@@ -1,0 +1,1 @@
+export default function Custom404(){return <main style={{maxWidth:720,margin:'80px auto',padding:24}}><h1>404</h1><p>The requested PowerChain page could not be found.</p><a href='/'>Return home</a></main>}

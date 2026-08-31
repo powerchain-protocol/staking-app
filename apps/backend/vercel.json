@@ -1,0 +1,6 @@
+{
+  "crons": [
+    { "path": "/api/cron/reconcile", "schedule": "* * * * *" },
+    { "path": "/api/cron/index", "schedule": "*/5 * * * *" }
+  ]
+}

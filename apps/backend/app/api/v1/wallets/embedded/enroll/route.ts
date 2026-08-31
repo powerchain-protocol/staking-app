@@ -1,0 +1,8 @@
+import crypto from 'node:crypto';
+import { createEmbeddedSigningSession } from '@/lib/server/embedded-wallet';
+import { db } from '@/lib/server/db';
+import { env } from '@/lib/server/config';
+import { jsonBody,ok,route,ApiError } from '@/lib/server/http';
+import { enforceRateLimit,rateLimitKey,requestIp } from '@/lib/server/rate-limit';
+export const runtime='nodejs';
+export const POST=route(async(r:Request)=>{if(!env.embeddedWalletsEnabled)throw new ApiError(404,'EMBEDDED_WALLETS_DISABLED','Embedded wallets are not enabled for this deployment');await enforceRateLimit(rateLimitKey('embedded-enroll',requestIp(r)),5,60);const b=await jsonBody<Record<string,unknown>>(r);const network=(typeof b.network==='string'?b.network:'SOLANA').toUpperCase() as 'SOLANA'|'SUI';if(!['SOLANA','SUI'].includes(network))throw new ApiError(400,'INVALID_NETWORK','network must be SOLANA or SUI');const enrollmentId=crypto.randomUUID();const subjectId=`embedded:${enrollmentId}`;const expiresAt=new Date(Date.now()+15*60_000);const [row]=await db()`INSERT INTO embedded_wallet_enrollments(id,subject_id,network,expires_at,status) VALUES(${enrollmentId},${subjectId},${network},${expiresAt},'CREATED') RETURNING *`;const provider=await createEmbeddedSigningSession({operation:'CREATE_WALLET',subjectId,network,returnUrl:`${env.appOrigin}/?embedded_enrollment=${enrollmentId}`});await db()`UPDATE embedded_wallet_enrollments SET provider_session_id=${String(provider.sessionId)},status='PENDING' WHERE id=${enrollmentId}`;return ok({enrollmentId,expiresAt,providerUrl:provider.url,providerSessionId:provider.sessionId});});

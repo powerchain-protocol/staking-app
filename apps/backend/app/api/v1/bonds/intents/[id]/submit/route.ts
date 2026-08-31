@@ -1,0 +1,2 @@
+import { jsonBody,ok,requireString,route } from '@/lib/server/http';import { requireSession } from '@/lib/server/session';import { bondsService } from '@/services/bonds.service';
+export const runtime='nodejs';export const POST=route(async(r:Request,c:{params:Promise<{id:string}>})=>{const s=await requireSession();const{id}=await c.params;const b=await jsonBody<Record<string,unknown>>(r);return ok(await bondsService.submitIntent(s,id,requireString(b.signedTransactionBase64,'signedTransactionBase64',100000)));});

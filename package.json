@@ -1,0 +1,51 @@
+{
+  "name": "powerchain-staking-platform",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w @powerchain/web",
+    "dev:dashboard": "npm run dev -w @powerchain/dashboard",
+    "dev:backend": "npm run dev -w @powerchain/backend",
+    "build": "npm run build -ws --if-present",
+    "typecheck": "npm run typecheck -ws --if-present",
+    "check:source": "node scripts/source-check.mjs",
+    "release:audit": "node scripts/release-audit.mjs",
+    "validate:release": "npm run check:source && npm run programs:audit && npm run integrations:audit && npm run auth:audit && npm run ai:audit && npm run design:audit && npm run ui:audit && npm run realtime:audit && npm run release:audit",
+    "db:migrate": "npm run db:migrate -w @powerchain/backend",
+    "worker:reconcile": "npm run worker:reconcile -w @powerchain/backend",
+    "worker:reconcile:loop": "npm run worker:reconcile:loop -w @powerchain/backend",
+    "programs:audit": "node scripts/program-compat-audit.mjs",
+    "programs:build": "cd programs && anchor build",
+    "programs:test": "cd programs && anchor test",
+    "programs:sui:build": "sui move build --path programs/sui/wpwrc_bridge",
+    "programs:sui:test": "sui move test --path programs/sui/wpwrc_bridge",
+    "dev": "node scripts/dev.mjs",
+    "dev:all": "node scripts/dev.mjs",
+    "prisma:generate": "npm run prisma:generate -w @powerchain/backend",
+    "prisma:validate": "npm run prisma:validate -w @powerchain/backend",
+    "db:studio": "npm run prisma:studio -w @powerchain/backend",
+    "integrations:audit": "node scripts/integrations-audit.mjs",
+    "fullstack:audit": "npm run check:source && npm run programs:audit && npm run integrations:audit && npm run auth:audit && npm run ai:audit && npm run design:audit && npm run ui:audit && npm run realtime:audit && npm run release:audit",
+    "worker:index": "npm run worker:index -w @powerchain/backend",
+    "worker:index:loop": "npm run worker:index:loop -w @powerchain/backend",
+    "auth:audit": "node scripts/auth-security-audit.mjs",
+    "ui:audit": "node scripts/ui-integrity-audit.mjs",
+    "ai:ingest": "npm run ai:ingest -w @powerchain/backend",
+    "ai:audit": "node scripts/ai-runtime-audit.mjs",
+    "design:audit": "node scripts/design-system-audit.mjs",
+    "dev:realtime": "npm run realtime:dev -w @powerchain/backend",
+    "realtime:start": "npm run realtime:start -w @powerchain/backend",
+    "realtime:audit": "node scripts/realtime-audit.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3"
+  }
+}

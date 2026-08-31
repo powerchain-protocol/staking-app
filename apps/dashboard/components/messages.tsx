@@ -1,0 +1,1 @@
+import{Icons}from'@/components/icons';export function Message({title,children,tone='info'}:{title:string;children:React.ReactNode;tone?:'info'|'success'|'warning'|'error'}){return <div className={`message message-${tone}`} role={tone==='error'?'alert':'status'}><Icons.ShieldCheck size={17}/><div><b>{title}</b><div className='small'>{children}</div></div></div>}

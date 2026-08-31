@@ -1,0 +1,1 @@
+import{skills}from'@/lib/ai/catalog';import{MCP_TOOLS}from'@/lib/ai/mcp';import{ok,route}from'@/lib/server/http';export const runtime='nodejs';export const GET=route(async()=>ok({skills,tools:MCP_TOOLS}));

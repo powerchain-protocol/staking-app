@@ -1,0 +1,1 @@
+'use client';export default function ErrorPage({reset}:{error:Error&{digest?:string};reset:()=>void}){return <main className='legal-page'><h1>Something went wrong</h1><p>The request was not completed. No blockchain action should be assumed successful.</p><button onClick={reset}>Try again</button></main>}

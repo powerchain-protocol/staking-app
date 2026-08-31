@@ -1,0 +1,3 @@
+import { Client } from 'pg';
+const url=process.env.DATABASE_URL;if(!url)throw new Error('DATABASE_URL is required');const maxAge=Number(process.env.REALTIME_HEARTBEAT_SECONDS??25)*3;
+const db=new Client({connectionString:url});await db.connect();const result=await db.query(`SELECT instance_id,last_seen_at,connections,event_cursor,EXTRACT(EPOCH FROM(now()-last_seen_at))::int AS age_seconds FROM realtime_server_heartbeats ORDER BY last_seen_at DESC LIMIT 1`);await db.end();const row=result.rows[0];if(!row||Number(row.age_seconds)>maxAge){console.error(JSON.stringify({ok:false,error:'REALTIME_STALE',row:row??null,maxAgeSeconds:maxAge}));process.exit(1)}console.log(JSON.stringify({ok:true,...row,maxAgeSeconds:maxAge},null,2));

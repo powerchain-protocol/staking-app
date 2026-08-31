@@ -1,0 +1,28 @@
+export type AiProviderId='gateway'|'openai'|'anthropic'|'deepseek'|'local'|'ollama'|'vllm';
+export type AiDomain='generic'|'solana'|'sui'|'powerchain'|'renewables'|'charts'|'data'|'support';
+export type AiCertainty='VERIFIED'|'GROUNDED'|'INFERENCE'|'UNAVAILABLE';
+export type ResponseStyle='professional'|'concise'|'operator'|'analyst'|'technical'|'executive';
+export type ToolMode='READ'|'PROPOSE'|'STATE_CHANGE';
+export type AiCitation={id:string;title:string;sourceType:string;sourceUri?:string|null;trustTier:'AUTHORITATIVE'|'VERIFIED'|'REFERENCE'|'UNTRUSTED';excerpt:string};
+export type AiEvidence={citation:AiCitation;domain:string;score:number;content:string};
+export type AiToolRequest={name:string;arguments:Record<string,unknown>};
+export type AiToolResult={name:string;mode:ToolMode;ok:boolean;content:unknown;citation?:AiCitation};
+export type AiStage='policy'|'grounding'|'tools'|'provider'|'verification'|'complete';
+export type AiStageEvent={stage:AiStage;message:string;meta?:Record<string,unknown>};
+export type AiAssistantResponse={
+  id?:string;
+  messageId?:string;
+  answer:string;
+  certainty:AiCertainty;
+  citations:AiCitation[];
+  unsupportedClaims:string[];
+  toolRuns:AiToolResult[];
+  model:string;
+  provider:AiProviderId;
+  style:ResponseStyle;
+  assistantId:string;
+  promptVersion?:string;
+  fallbackCount?:number;
+  evidenceScore?:number;
+};
+export type AiChatInput={subjectId:string;message:string;model?:string;provider?:AiProviderId;assistantId?:string;style?:ResponseStyle;conversationId?:string;tools?:string[];loraAdapter?:string;requestId:string};

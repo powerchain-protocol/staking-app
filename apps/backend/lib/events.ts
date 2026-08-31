@@ -1,0 +1,2 @@
+import 'server-only';import {db} from '@/lib/server/db';import {requestContext} from '@/lib/server/request-context';import type{PlatformEvent}from '@/types/events';
+export async function recordPlatformEvent(event:PlatformEvent){const [row]=await db()`INSERT INTO platform_events(event_type,subject_id,source,severity,payload,request_id) VALUES(${event.type},${event.subjectId??null},${event.source},${event.severity??'INFO'},${db().json(event.payload??{})},${requestContext()?.requestId??null}) RETURNING id,created_at`;return row;}
